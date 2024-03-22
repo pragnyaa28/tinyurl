@@ -34,10 +34,10 @@ public class TinyUrlServiceImpl implements TinyUrlService{
 
         return urlRepo.save(urlEntity);
     }
-    @Override
-    public String getAllTinyUrlsByUserId(String userId) {
-        return null;
-    }
+//    @Override
+//    public UrlEntity getAllTinyUrlsByUserId(String userId) {
+//        return urlRepo.findById(userId).orElse(null);
+//    }
 
     @Override
     public List<UrlEntity> findAll() {

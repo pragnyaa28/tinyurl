@@ -1,6 +1,13 @@
 package com.intuit.demo.repository;
 
 import com.intuit.demo.entity.UrlEntity;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.cassandra.repository.AllowFiltering;
+import org.springframework.data.cassandra.repository.CassandraRepository;
 
-public interface UrlRepository extends MongoRepository<UrlEntity, String> {}
+import java.util.UUID;
+
+public interface UrlRepository extends CassandraRepository<UrlEntity, Long> {
+
+    @AllowFiltering
+    UrlEntity findUrlEntityByShortUrl(String shortUrl);
+}
