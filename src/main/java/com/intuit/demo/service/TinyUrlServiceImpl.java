@@ -1,5 +1,7 @@
 package com.intuit.demo.service;
 
+import com.intuit.demo.businesslogic.Base62Strategy;
+import com.intuit.demo.businesslogic.GenerationStrategy;
 import com.intuit.demo.entity.UrlEntity;
 import com.intuit.demo.helper.TinyUrlHelper;
 import com.intuit.demo.model.CreateTinyUrlRequest;
@@ -7,8 +9,6 @@ import com.intuit.demo.repository.UrlRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TinyUrlServiceImpl implements TinyUrlService{
@@ -19,28 +19,30 @@ public class TinyUrlServiceImpl implements TinyUrlService{
     private UrlRepository urlRepo;
     @Override
     public UrlEntity createTinyUrl(CreateTinyUrlRequest createTinyUrlRequest) {
+
+        if(urlRepo.findUrlEntityByLongUrl(createTinyUrlRequest.getLongUrl())!= null){
+            return urlRepo.findUrlEntityByLongUrl(createTinyUrlRequest.getLongUrl());
+        }
+
         UrlEntity urlEntity = new UrlEntity();
         urlEntity.setLongUrl(createTinyUrlRequest.getLongUrl());
         if(StringUtils.isNotBlank(createTinyUrlRequest.getCustomShortUrl()))
         {
-            if(tinyUrlHelper.findExistingPool(createTinyUrlRequest.getCustomShortUrl())) {
-                //
+            if(tinyUrlHelper.findExistingShortUrl(createTinyUrlRequest.getCustomShortUrl())) {
+                //check if already present then error handling
             }
             urlEntity.setShortUrl(createTinyUrlRequest.getCustomShortUrl());
         }
         else {
-            urlEntity.setShortUrl(tinyUrlHelper.generateShortUrl(createTinyUrlRequest.getLongUrl()));
+            GenerationStrategy generationStrategy = new Base62Strategy();
+            urlEntity.setShortUrl(generationStrategy.generateShortUrl(createTinyUrlRequest.getLongUrl()));
         }
 
         return urlRepo.save(urlEntity);
     }
-//    @Override
-//    public UrlEntity getAllTinyUrlsByUserId(String userId) {
-//        return urlRepo.findById(userId).orElse(null);
-//    }
 
     @Override
-    public List<UrlEntity> findAll() {
-        return urlRepo.findAll();
+    public String getLongUrl(String shortUrl) {
+        return urlRepo.findUrlEntityByShortUrl(shortUrl).getLongUrl();
     }
 }

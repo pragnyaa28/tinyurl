@@ -10,7 +10,6 @@ import java.util.List;
 public interface TinyUrlService {
 
     UrlEntity createTinyUrl(CreateTinyUrlRequest request);
-//    UrlEntity getAllTinyUrlsByUserId(String userId);
-    List<UrlEntity> findAll();
+    String getLongUrl(String shortUrl);
 
 }

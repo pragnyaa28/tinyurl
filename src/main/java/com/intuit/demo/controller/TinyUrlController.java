@@ -62,7 +62,7 @@ public class TinyUrlController {
 //            return hashKey;
 //        }
 //
-//        @PostMapping(value="/api/deleteUrl")
+//        @PostMapping(value="/deleteUrl")
 //        public String deleteUrl(@RequestBody URL request) {
 //            if (StringUtils.isEmpty(request.hashKey)) {
 //                return "Please specify valid hashKey";
@@ -78,21 +78,11 @@ public class TinyUrlController {
 //                return "Shortened URL not found";
 //
 //        }
-//
-//
-//
-//
-    @GetMapping("/{shortUrl}")
-    public RedirectView redirect(@PathVariable String shortUrl) {
-        RedirectView redirectView = new RedirectView();
 
-        List<UrlEntity> urlEntities = tinyUrlService.findAll();
-        for (UrlEntity url : urlEntities) {
-            if (shortUrl.equals(url.getShortUrl())) {
-                String sUrl = url.getLongUrl();
-                redirectView.setUrl(sUrl);
-            }
-        }
-        return redirectView;
+    @GetMapping("/{shortUrl}")
+    public String getLongUrl(@PathVariable String shortUrl) {
+        return tinyUrlService.getLongUrl(shortUrl)!=null?
+                tinyUrlService.getLongUrl(shortUrl):"Invalid Tiny Url";
+
     }
 }
