@@ -1,19 +1,19 @@
 package com.intuit.demo.entity;
 
-import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Table
+@Document(collection = "intuit")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UrlEntity {
 
-    @PrimaryKey
-    private long id;
+
+    @Id
     private String shortUrl;
     private String longUrl;
 }

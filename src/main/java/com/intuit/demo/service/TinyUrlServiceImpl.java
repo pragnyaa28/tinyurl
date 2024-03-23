@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("TinyUrlServiceImpl")
 public class TinyUrlServiceImpl implements TinyUrlService{
 
     @Autowired
@@ -20,8 +20,8 @@ public class TinyUrlServiceImpl implements TinyUrlService{
     @Override
     public UrlEntity createTinyUrl(CreateTinyUrlRequest createTinyUrlRequest) {
 
-        if(urlRepo.findUrlEntityByLongUrl(createTinyUrlRequest.getLongUrl())!= null){
-            return urlRepo.findUrlEntityByLongUrl(createTinyUrlRequest.getLongUrl());
+        if(urlRepo.findByLongUrl(createTinyUrlRequest.getLongUrl())!= null){
+            return urlRepo.findByLongUrl(createTinyUrlRequest.getLongUrl());
         }
 
         UrlEntity urlEntity = new UrlEntity();
@@ -43,6 +43,6 @@ public class TinyUrlServiceImpl implements TinyUrlService{
 
     @Override
     public String getLongUrl(String shortUrl) {
-        return urlRepo.findUrlEntityByShortUrl(shortUrl).getLongUrl();
+        return urlRepo.findByShortUrl(shortUrl).getLongUrl();
     }
 }

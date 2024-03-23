@@ -1,6 +1,5 @@
 package com.intuit.demo.helper;
 
-import com.intuit.demo.entity.UrlEntity;
 import com.intuit.demo.repository.UrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +12,6 @@ public class TinyUrlHelper {
 
     public boolean findExistingShortUrl(String shortUrl) {
 
-        return urlRepository.findUrlEntityByShortUrl(shortUrl) == null;
+        return urlRepository.findByShortUrl(shortUrl) == null;
     }
 }
