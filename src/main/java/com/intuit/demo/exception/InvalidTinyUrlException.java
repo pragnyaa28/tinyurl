@@ -1,4 +1,4 @@
-package com.intuit.demo.exceptionhandler;
+package com.intuit.demo.exception;
 
 public class InvalidTinyUrlException extends Exception{
 

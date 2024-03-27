@@ -9,18 +9,19 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class Base62StrategyTest {
+public class MDStrategyTest {
 
     @InjectMocks
-    Base62Strategy base62Strategy;
+    MDStrategy mdStrategy;
 
     @Mock
     TinyUrlChecker tinyUrlChecker;
 
     @Test
     public void generateShortUrl() {
-        Mockito.when(tinyUrlChecker.existingShortUrlFound(Mockito.anyString())).thenReturn(false);
+        Mockito.when(tinyUrlChecker.existingShortUrlFound(Mockito.anyString()))
+                .thenReturn(false);
         Assertions.assertEquals(7,
-                base62Strategy.generateShortUrl("https://goofrde.com").length());
+                mdStrategy.generateShortUrl("https://goofrde.com").length());
     }
 }

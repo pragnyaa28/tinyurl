@@ -1,7 +1,7 @@
-package com.intuit.demo.advice;
+package com.intuit.demo.exception.handler;
 
-import com.intuit.demo.exceptionhandler.CustomShortUrlTakenException;
-import com.intuit.demo.exceptionhandler.InvalidTinyUrlException;
+import com.intuit.demo.exception.CustomShortUrlTakenException;
+import com.intuit.demo.exception.InvalidTinyUrlException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,6 +52,15 @@ public class GlobalExceptionHandler {
         log.error("URL is not in correct format {}", ex.getMessage());
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("errorMessage", "Malformed Long URL");
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public Map<String, String> handleRuntimeException(RuntimeException ex) {
+        log.error("Runtime Error {}", ex.getMessage());
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("errorMessage", "Sorry the service is temporarily not working as expected");
         return errorMap;
     }
 

@@ -1,7 +1,5 @@
 package com.intuit.demo.businesslogic;
 
-import com.intuit.demo.helper.TinyUrlHelper;
-import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +15,7 @@ public class Base62Strategy implements GenerationStrategy{
     private static final int BASE = ALPHABET.length();
 
     @Autowired
-    TinyUrlHelper tinyUrlHelper;
+    TinyUrlChecker tinyUrlChecker;
 
 
     @Override
@@ -31,7 +29,7 @@ public class Base62Strategy implements GenerationStrategy{
                 encodedString.append(ALPHABET.charAt(ThreadLocalRandom.current().nextInt(0, BASE)));
             }
         } while(StringUtils.isNotBlank(encodedString.toString())
-                && tinyUrlHelper.existingShortUrlFound(encodedString.toString()));
+                && tinyUrlChecker.existingShortUrlFound(encodedString.toString()));
 
         return encodedString.toString();
     }

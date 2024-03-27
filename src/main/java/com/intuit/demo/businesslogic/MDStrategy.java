@@ -1,6 +1,5 @@
 package com.intuit.demo.businesslogic;
 
-import com.intuit.demo.helper.TinyUrlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,21 +16,23 @@ public class MDStrategy implements  GenerationStrategy{
      */
 
     @Autowired
-    TinyUrlHelper tinyUrlHelper;
+    TinyUrlChecker tinyUrlChecker;
 
     @Override
     public String generateShortUrl(String longURL) {
         String hash = getHash(longURL);
         int numberOfCharsInHash = hash.length();
         int counter = 0;
+        String shortUrl="";
         while(counter < numberOfCharsInHash-SHORT_URL_CHAR_SIZE){
             String hashSubstring = hash.substring(counter, counter+SHORT_URL_CHAR_SIZE);
-            if(!tinyUrlHelper.existingShortUrlFound(hashSubstring)){
-                return hashSubstring;
+            if(!tinyUrlChecker.existingShortUrlFound(hashSubstring)){
+                shortUrl = hashSubstring;
+                break;
             }
             counter++;
         }
-        return null;
+        return shortUrl;
     }
 
     private String getHash(String longURL){

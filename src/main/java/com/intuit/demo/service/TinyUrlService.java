@@ -1,18 +1,16 @@
 package com.intuit.demo.service;
 
 import com.intuit.demo.entity.UrlEntity;
-import com.intuit.demo.exceptionhandler.CustomShortUrlTakenException;
-import com.intuit.demo.exceptionhandler.InvalidTinyUrlException;
-import com.intuit.demo.model.CreateTinyUrlRequest;
-import org.springframework.stereotype.Component;
+import com.intuit.demo.exception.CustomShortUrlTakenException;
+import com.intuit.demo.exception.InvalidTinyUrlException;
+import com.intuit.demo.model.TinyUrlRequest;
 
 import java.net.MalformedURLException;
-import java.util.List;
 
-@Component
 public interface TinyUrlService {
 
-    UrlEntity createTinyUrl(CreateTinyUrlRequest request) throws CustomShortUrlTakenException, MalformedURLException;
-    UrlEntity getLongUrl(String shortUrl) throws InvalidTinyUrlException;
+    UrlEntity createTinyUrl(TinyUrlRequest request) throws CustomShortUrlTakenException, MalformedURLException;
+
+    String getLongUrl(String shortUrl) throws InvalidTinyUrlException;
 
 }

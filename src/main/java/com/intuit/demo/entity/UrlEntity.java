@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+
+import static com.intuit.demo.constants.TinyUrlConstants.EXPIRY_IN_SECONDS;
 
 @Data
 @Document(collection = "intuit")
@@ -21,6 +22,6 @@ public class UrlEntity {
 
     private String longUrl;
 
-    @Indexed(name = "deleteAt", expireAfterSeconds = 10)
+    @Indexed(name = "deleteAt", expireAfterSeconds = EXPIRY_IN_SECONDS)
     private LocalDateTime createdTimestamp;
 }

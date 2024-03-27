@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateTinyUrlRequest {
+public class TinyUrlRequest {
 
     @JsonProperty
     @NotBlank(message = "Long URL should not be empty.")

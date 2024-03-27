@@ -3,10 +3,10 @@ package com.intuit.demo.service;
 import com.intuit.demo.businesslogic.GenerationStrategy;
 import com.intuit.demo.businesslogic.GenerationStrategyFactory;
 import com.intuit.demo.entity.UrlEntity;
-import com.intuit.demo.exceptionhandler.CustomShortUrlTakenException;
-import com.intuit.demo.exceptionhandler.InvalidTinyUrlException;
-import com.intuit.demo.helper.TinyUrlHelper;
-import com.intuit.demo.model.CreateTinyUrlRequest;
+import com.intuit.demo.exception.CustomShortUrlTakenException;
+import com.intuit.demo.exception.InvalidTinyUrlException;
+import com.intuit.demo.businesslogic.TinyUrlChecker;
+import com.intuit.demo.model.TinyUrlRequest;
 import com.intuit.demo.repository.UrlRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,26 +17,27 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
+import static com.intuit.demo.constants.TinyUrlConstants.TINY_URL_PREFIX;
+
 @Service("TinyUrlServiceImpl")
 @Slf4j
 public class TinyUrlServiceImpl implements TinyUrlService{
 
     @Autowired
-    TinyUrlHelper tinyUrlHelper;
+    TinyUrlChecker tinyUrlChecker;
     @Autowired
     private UrlRepository urlRepo;
     @Autowired
     GenerationStrategyFactory generationStrategyFactory;
 
-    private static final String TINY_URL_PREFIX = "http://localhost:8080/v1/tiny/";
     @Override
-    public UrlEntity createTinyUrl(CreateTinyUrlRequest createTinyUrlRequest)
+    public UrlEntity createTinyUrl(TinyUrlRequest tinyUrlRequest)
             throws CustomShortUrlTakenException, MalformedURLException {
 
-        validateLongUrl(createTinyUrlRequest.getLongUrl());
+        validateLongUrl(tinyUrlRequest.getLongUrl());
         log.info("Validation Successful for Long URL Format");
 
-        UrlEntity existingMapping = urlRepo.findByLongUrl(createTinyUrlRequest.getLongUrl());
+        UrlEntity existingMapping = urlRepo.findByLongUrl(tinyUrlRequest.getLongUrl());
 
         if(existingMapping!= null){
             log.debug("Existing Tiny URL found for the Long URL  {}",
@@ -46,23 +47,23 @@ public class TinyUrlServiceImpl implements TinyUrlService{
 
         UrlEntity urlEntity = new UrlEntity();
 
-        urlEntity.setLongUrl(createTinyUrlRequest.getLongUrl());
+        urlEntity.setLongUrl(tinyUrlRequest.getLongUrl());
 
-        if(StringUtils.isNotBlank(createTinyUrlRequest.getCustomShortUrl())) {
+        if(StringUtils.isNotBlank(tinyUrlRequest.getCustomShortUrl())) {
 
-            if(tinyUrlHelper.existingShortUrlFound(createTinyUrlRequest.getCustomShortUrl())) {
+            if(tinyUrlChecker.existingShortUrlFound(tinyUrlRequest.getCustomShortUrl())) {
                 log.error("Custom Short URL Already Taken {}",
-                        createTinyUrlRequest.getCustomShortUrl());
-                throw new CustomShortUrlTakenException(createTinyUrlRequest.getCustomShortUrl());
+                        tinyUrlRequest.getCustomShortUrl());
+                throw new CustomShortUrlTakenException(tinyUrlRequest.getCustomShortUrl());
             }
-            urlEntity.setShortUrl(TINY_URL_PREFIX + createTinyUrlRequest.getCustomShortUrl());
-            log.debug("New Mapping formed {} to {}", createTinyUrlRequest.getLongUrl(),
-                    createTinyUrlRequest.getCustomShortUrl());
+            urlEntity.setShortUrl(TINY_URL_PREFIX + tinyUrlRequest.getCustomShortUrl());
+            log.debug("New Mapping formed {} to {}", tinyUrlRequest.getLongUrl(),
+                    tinyUrlRequest.getCustomShortUrl());
         }
         else {
 
             GenerationStrategy generationStrategy = generationStrategyFactory.getGenerationStrategy("BASE62");
-            urlEntity.setShortUrl(TINY_URL_PREFIX + generationStrategy.generateShortUrl(createTinyUrlRequest.getLongUrl()));
+            urlEntity.setShortUrl(TINY_URL_PREFIX + generationStrategy.generateShortUrl(tinyUrlRequest.getLongUrl()));
         }
 
         urlEntity.setCreatedTimestamp(LocalDateTime.now());
@@ -75,7 +76,7 @@ public class TinyUrlServiceImpl implements TinyUrlService{
     }
 
     @Override
-    public UrlEntity getLongUrl(String shortUrl) throws InvalidTinyUrlException {
+    public String getLongUrl(String shortUrl) throws InvalidTinyUrlException {
         /*
           Minimum size of custom short URLs is 5 & generated short URLs is 7,
           no need to check DB
@@ -88,7 +89,7 @@ public class TinyUrlServiceImpl implements TinyUrlService{
         UrlEntity urlEntity = urlRepo.findByShortUrl(shortUrl);
 
         if( urlEntity != null && StringUtils.isNotBlank(urlEntity.getLongUrl()))
-            return  urlEntity;
+            return  urlEntity.getLongUrl();
         else
             throw new InvalidTinyUrlException(shortUrl);
 
