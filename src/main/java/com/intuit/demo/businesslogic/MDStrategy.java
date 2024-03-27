@@ -10,11 +10,31 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class MDStrategy implements  GenerationStrategy{
 
-    private static int SHORT_URL_CHAR_SIZE=7;
+    /**
+     * Code Sourced from https://www.baeldung.com/java-md5
+     */
+
+    private static final int SHORT_URL_CHAR_SIZE=7;
 
     @Autowired
     TinyUrlHelper tinyUrlHelper;
-    public String convert(String longURL){
+
+    @Override
+    public String generateShortUrl(String longURL) {
+        String hash = getHash(longURL);
+        int numberOfCharsInHash = hash.length();
+        int counter = 0;
+        while(counter < numberOfCharsInHash-SHORT_URL_CHAR_SIZE){
+            String hashSubstring = hash.substring(counter, counter+SHORT_URL_CHAR_SIZE);
+            if(!tinyUrlHelper.existingShortUrlFound(hashSubstring)){
+                return hashSubstring;
+            }
+            counter++;
+        }
+        return null;
+    }
+
+    private String getHash(String longURL){
 
         MessageDigest digest = null;
         try {
@@ -30,18 +50,5 @@ public class MDStrategy implements  GenerationStrategy{
         }
         return hexString.toString();
 
-    }
-    @Override
-    public String generateShortUrl(String longURL) {
-        String hash= convert(longURL);
-        int numberOfCharsInHash=hash.length();
-        int counter=0;
-        while(counter < numberOfCharsInHash-SHORT_URL_CHAR_SIZE){
-            if(!tinyUrlHelper.findExistingShortUrl(hash.substring(counter, counter+SHORT_URL_CHAR_SIZE))){
-                return hash.substring(counter, counter+SHORT_URL_CHAR_SIZE);
-            }
-            counter++;
-        }
-        return null;
     }
 }

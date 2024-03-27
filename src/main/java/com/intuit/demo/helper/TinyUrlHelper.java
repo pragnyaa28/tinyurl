@@ -10,8 +10,9 @@ public class TinyUrlHelper {
     @Autowired
     UrlRepository urlRepository;
 
-    public boolean findExistingShortUrl(String shortUrl) {
+    public boolean existingShortUrlFound(String shortUrl) {
+        System.out.println("Hi");
 
-        return urlRepository.findByShortUrl(shortUrl) == null;
+        return urlRepository.findByShortUrl(shortUrl) != null;
     }
 }
