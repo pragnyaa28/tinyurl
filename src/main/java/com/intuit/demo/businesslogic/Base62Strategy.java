@@ -8,15 +8,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.intuit.demo.constants.TinyUrlConstants.SHORT_URL_CHAR_SIZE;
+
 @Component
 public class Base62Strategy implements GenerationStrategy{
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int BASE = ALPHABET.length();
-    private static final int SHORT_URL_CHAR_SIZE = 7;
 
     @Autowired
     TinyUrlHelper tinyUrlHelper;
+
 
     @Override
     public String generateShortUrl(String longUrl) {

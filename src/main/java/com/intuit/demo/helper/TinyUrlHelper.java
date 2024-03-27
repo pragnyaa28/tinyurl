@@ -10,9 +10,9 @@ public class TinyUrlHelper {
     @Autowired
     UrlRepository urlRepository;
 
-    public boolean existingShortUrlFound(String shortUrl) {
-        System.out.println("Hi");
+    private static final String TINY_URL_PREFIX = "https://tiny.url/";
 
-        return urlRepository.findByShortUrl(shortUrl) != null;
+    public boolean existingShortUrlFound(String shortUrl) {
+        return urlRepository.findByShortUrl(TINY_URL_PREFIX + shortUrl) != null;
     }
 }

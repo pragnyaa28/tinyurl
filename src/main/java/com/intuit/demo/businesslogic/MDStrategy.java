@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static com.intuit.demo.constants.TinyUrlConstants.SHORT_URL_CHAR_SIZE;
+
 @Component
 public class MDStrategy implements  GenerationStrategy{
 
     /**
      * Code Sourced from https://www.baeldung.com/java-md5
      */
-
-    private static final int SHORT_URL_CHAR_SIZE=7;
 
     @Autowired
     TinyUrlHelper tinyUrlHelper;
@@ -36,7 +36,7 @@ public class MDStrategy implements  GenerationStrategy{
 
     private String getHash(String longURL){
 
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
